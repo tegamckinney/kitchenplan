@@ -7,7 +7,6 @@ recipes:
         - applications::vlc
     mac_os_x:
         - applications::adobe_reader
-        - drivers::xerox550
         - osxdefaults::add_note_to_loginscreen
         - osxdefaults::disable_auto-correct
         - osxdefaults::enable_subpixel_font_rendering_on_non-apple_lcds
@@ -20,7 +19,5 @@ recipes:
         - osxdefaults::save_screenshots_to_the_desktop
         - applications::bash
 attributes:
-    drivers:
-        xerox: 172.18.19.67
     osxdefaults:
-        loginmessage: Property of Kunstmaan NV - 016 300 780 - hello@kunstmaan.be
+        loginmessage: Property of Tega McKinney - tega.mckinney@freshedgesolutions.com

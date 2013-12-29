@@ -1,6 +1,5 @@
 recipes:
     global:
-        - dotfiles::kms
         - dotfiles::workspace
         - applications::postgresql
         - applications::psycopg2
@@ -8,7 +7,6 @@ recipes:
         - applications::mysql_python
         - applications::apache
         - applications::php55
-        - dotfiles::kdeploy
     mac_os_x:
         - applications::hipchat
         - osxdefaults::disable_disk_image_verification
@@ -46,4 +44,4 @@ recipes:
 attributes:
     mysql_root_password: "password"
     postfix:
-        domain: "kunstmaan.be"
+        domain: "freshedgesolutions.com"
