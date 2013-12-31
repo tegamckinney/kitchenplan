@@ -1,6 +1,7 @@
 require 'yaml'
 require 'etc'
 require 'ohai'
+require 'log_buddy'
 
 module Kitchenplan
 
@@ -12,6 +13,7 @@ module Kitchenplan
     attr_reader :group_configs
 
     def initialize
+        LogBuddy.init
         self.detect_platform
         self.parse_default_config
         self.parse_people_config
@@ -20,8 +22,9 @@ module Kitchenplan
 
     def detect_platform
         ohai = Ohai::System.new
-        ohai.all_plugins
+        ohai.platform
         @platform = ohai[:platform_family]
+        d{"Ohai platform info: "; ohai.platform; ohai[:platform_family]; @platform}
     end
 
     def parse_default_config
