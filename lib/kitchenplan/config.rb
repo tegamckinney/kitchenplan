@@ -22,7 +22,8 @@ module Kitchenplan
 
     def detect_platform
         ohai = Ohai::System.new
-        ohai.platform
+        ohai.require_plugin("os")
+        ohai.require_plugin("platform")
         @platform = ohai[:platform_family]
         d{"Ohai platform info: "; ohai.platform; ohai[:platform_family]; @platform}
     end
