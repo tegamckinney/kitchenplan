@@ -1,11 +1,11 @@
 groups:
     - bash
     - developer
-    - smartie
 recipes:
     global:
     mac_os_x:
         - applications::1password
+        - applications::cask_apps
         - applications::charlesproxy
         - applications::dropbox
         - applications::evernote
@@ -14,32 +14,35 @@ recipes:
         - applications::things
         - applications::tower
         - applications::vlc
-        - applications::superduper
         - applications::alfred
-        - applications::totalfinder
         - applications::cord
         - applications::transmit
         - applications::spotify
         - applications::bartender
-        - osxdefaults::dock_automatically_hide_and_show_the_dock
-        - osxdefaults::dock_do_not_animate_opening_applications_from_the_dock
-        - osxdefaults::dock_enable_spring_loading_for_all_dock_items
-        - osxdefaults::dock_make_dock_icons_of_hidden_applications_translucent
-        - osxdefaults::dock_minimize_to_application
-        - osxdefaults::dock_set_the_icon_size_of_dock_items_to_36_pixels
-        - osxdefaults::dock_show_indicator_lights_for_open_applications_in_the_dock
-        - osxdefaults::dock_position_the_dock_on_the_left_side
-        - osxdefaults::dock_enable_highlight_hover_effect_for_the_grid_view_of_a_stack
-        - osxdefaults::dock_remove_the_animation_when_hiding_showing_the_dock
-        - osxdefaults::dock_remove_the_auto-hiding_dock_delay
-        - osxdefaults::menu_add_battery_percentage
-        - osxdefaults::menu_show_clock_with_date
+
+        # dotfiles for projects - attributes defined below
+        - dotfiles::projects
+
+        # osxdefaults
+        - osxdefaults::set_computer_name
+
 attributes:
+    brew:
+        cask_apps:
+            - jing
+    sublime_text:
+        preferences:
+            font_size: 14
+            ignored_packages: []
+            remember_open_files: false
+            tab_size: 2
+            vintage_start_in_command_mode: true
+            vintage_use_clipboard: true
     git:
         name: Tega McKinney
         email: tega.mckinney@freshedgesolutions.com
     osxdefaults:
-        computername: Snopy
+        computername: Snoopy
     dotfiles:
         vim:
             bundle:
@@ -49,3 +52,16 @@ attributes:
                 - airline: https://github.com/bling/vim-airline
                 - syntastic: git://github.com/scrooloose/syntastic.git
                 - nerdtree: https://github.com/scrooloose/nerdtree.git
+        projects:
+            -
+                - kitchenplan
+                - https://github.com/tegamckinney/kitchenplan.git
+            -
+                - chef-applications
+                - https://github.com/tegamckinney/chef-applications.git
+            -
+                - mackup
+                - https://github.com/tegamckinney/mackup.git
+            -
+                - neglectedbytes
+                - https://github.com/tegamckinney/neglectedbytes

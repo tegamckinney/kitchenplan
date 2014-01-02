@@ -56,17 +56,13 @@ module Kitchenplan
         config['recipes'] = []
         config['recipes'] |= @default_config['recipes']['global'] || []
         config['recipes'] |= @default_config['recipes'][@platform] || []
-        ## defaulting to mac_os_x due to Ohai not recognizing platform and installing the recipes
-#        config['recipes'] |= @default_config['recipes']['mac_os_x'] || []
         @group_configs.each do |group_name, group_config|
             config['recipes'] |= group_config['recipes']['global'] || []
             config['recipes'] |= group_config['recipes'][@platform] || []
-#            config['recipes'] |= group_config['recipes']['mac_os_x'] || []
         end
         people_recipes = @people_config['recipes'] || {}
         config['recipes'] |= people_recipes['global'] || []
         config['recipes'] |= people_recipes[@platform] || []
-#        config['recipes'] |= people_recipes['mac_os_x'] || []
         config['attributes'] = {}
         config['attributes'].merge!(@default_config['attributes'] || {})
         @group_configs.each do |group_name, group_config|
