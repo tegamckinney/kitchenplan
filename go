@@ -14,7 +14,7 @@
 # KITCHENPLAN_REPO - repository to use for recipes/cookbooks (defaults to https://github.com/kitchenplan/kitchenplan.git)
 
 KITCHENPLAN_PATH = ENV.fetch("KITCHENPLAN_PATH", "/opt/kitchenplan")
-KITCHENPLAN_REPO = ENV.fetch("KITCHENPLAN_REPO", "https://github.com/kitchenplan/kitchenplan.git")
+KITCHENPLAN_REPO = ENV.fetch("KITCHENPLAN_REPO", "https://github.com/tegamckinney/kitchenplan.git")
 
 require 'optparse'
 options = {}
