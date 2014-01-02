@@ -3,7 +3,6 @@ recipes:
         - applications::bash-completion
         - dotfiles::bash_it
         - dotfiles::inputrc
-
 attributes:
     terminal:
         color_scheme: "Pro"
