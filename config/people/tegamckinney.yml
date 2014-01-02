@@ -17,7 +17,6 @@ recipes:
         - applications::alfred
         - applications::cord
         - applications::transmit
-        - applications::spotify
         - applications::bartender
 
         # dotfiles for projects - attributes defined below
