@@ -36,7 +36,6 @@ recipes:
         - applications::iterm2
         - applications::mou
         - applications::phantomjs
-        - applications::rvm
         - applications::sequelpro
         - applications::svgo
         - applications::sublime_text_3
