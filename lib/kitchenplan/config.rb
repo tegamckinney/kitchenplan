@@ -1,6 +1,7 @@
 require 'yaml'
 require 'etc'
 require 'ohai'
+require 'log_buddy'
 
 module Kitchenplan
 
@@ -12,6 +13,7 @@ module Kitchenplan
     attr_reader :group_configs
 
     def initialize
+        LogBuddy.init
         self.detect_platform
         self.parse_default_config
         self.parse_people_config
@@ -20,8 +22,10 @@ module Kitchenplan
 
     def detect_platform
         ohai = Ohai::System.new
-        ohai.platform
+        ohai.require_plugin("os")
+        ohai.require_plugin("platform")
         @platform = ohai[:platform_family]
+        d{"Ohai platform info: "; ohai.platform; ohai[:platform_family]; @platform}
     end
 
     def parse_default_config
@@ -51,18 +55,14 @@ module Kitchenplan
         config = {}
         config['recipes'] = []
         config['recipes'] |= @default_config['recipes']['global'] || []
- #       config['recipes'] |= @default_config['recipes'][@platform] || []
-        ## defaulting to mac_os_x due to Ohai not recognizing platform and installing the recipes
-        config['recipes'] |= @default_config['recipes']['mac_os_x'] || []
+        config['recipes'] |= @default_config['recipes'][@platform] || []
         @group_configs.each do |group_name, group_config|
             config['recipes'] |= group_config['recipes']['global'] || []
-#            config['recipes'] |= group_config['recipes'][@platform] || []
-            config['recipes'] |= group_config['recipes']['mac_os_x'] || []
+            config['recipes'] |= group_config['recipes'][@platform] || []
         end
         people_recipes = @people_config['recipes'] || {}
         config['recipes'] |= people_recipes['global'] || []
-#        config['recipes'] |= people_recipes[@platform] || []
-        config['recipes'] |= people_recipes['mac_os_x'] || []
+        config['recipes'] |= people_recipes[@platform] || []
         config['attributes'] = {}
         config['attributes'].merge!(@default_config['attributes'] || {})
         @group_configs.each do |group_name, group_config|
