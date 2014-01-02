@@ -3,3 +3,22 @@ recipes:
         - applications::bash-completion
         - dotfiles::bash_it
         - dotfiles::inputrc
+
+attributes:
+	terminal:
+		color_scheme: "Pro"
+	bash_it:
+	    theme: tylenol
+	    enabled_plugins:
+	      completion:
+	        - defaults
+	        - bash-it
+	        - git
+	        - brew
+	        - gem
+	        - rake
+	        - ssh
+	      plugins:
+	        - git
+	        - ssh
+	        - ruby
