@@ -5,7 +5,9 @@ recipes:
         - dotfiles::inputrc
 
 attributes:
-	bash_it:
+    terminal:
+        color_scheme: "Pro"
+    bash_it:
 	    theme: tylenol
 	    enabled_plugins:
 	      completion:
