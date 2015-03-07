@@ -4,7 +4,9 @@ module Kitchenplan
   class Cli < Thor
     include Thor::Actions
 
-    desc 'setup [<gitrepo>] [<target directory>]', 'Setup your workstation to run Kitchenplan and create an example configuration'
+    option :gitrepo, :type => :string, :desc => 'Repo with kitchenplan configs', :default => nil
+    option :config, :type => :boolean, :desc => 'Create <username>.yml'
+    desc 'setup [<target directory>] [--config] [--gitrepo=http://...]', 'Setup your workstation to run Kitchenplan and create an example configuration'
     long_desc <<-LONGDESC
     `kitchenplan setup` will install the dependencies of Kitchenplan and create a configuration in /opt/kitchenplan (or <target directory>
     if you pass it along) to use with the `kitchenplan provision` command.
@@ -12,7 +14,8 @@ module Kitchenplan
     If you already have a configuration stored in git somewhere, it will ask you to pass the git repo url. If you want to bypass the
     prompt, pass it along on the commandline. (see .travis.yml for an example)
     LONGDESC
-    def setup(gitrepo=nil, targetdir='/opt')
+    def setup(targetdir='/opt')
+      gitrepo = options[:gitrepo]
       logo
       install_clt unless File.exist? "/Library/Developer/CommandLineTools/usr/bin/clang"
       if gitrepo || File.exists?("#{targetdir}/kitchenplan")
@@ -27,7 +30,8 @@ module Kitchenplan
         end
       end
       unless File.exists?("#{targetdir}/kitchenplan/config/people/#{ENV['USER']}.yml")
-        user_create = yes?("config/people/#{ENV['USER']}.yml does not exist. Do you wish to create it? [y,n]", :green)
+        user_create = options[:config]
+        user_create = yes?("config/people/#{ENV['USER']}.yml does not exist. Do you wish to create it? [y,n]", :green) if user_create.nil?
         if user_create
           create_user(targetdir)
         end
@@ -35,26 +39,33 @@ module Kitchenplan
     end
 
     option :debug, :type => :boolean
+    option 'no-fetch', :type => :boolean
     option :recipes, :type => :array
     option :solorb, :type => :string, :default => 'tmp/solo.rb'
-    desc 'provision [<target directory>] [--debug] [--recipes=x y z] [--solorb=path]', 'Provision your workstation with Kitchenplan'
+    desc 'provision [<target directory>] [--debug] [--recipes=x y z] [--solorb=path] [--no-fetch]', 'Provision your workstation with Kitchenplan'
     long_desc <<-LONGDESC
     `kitchenplan provision` will use the configuration in /opt/kitchenplan (or <target directory>
     if you pass it along) to provision your workstation using Chef.
 
     You can optionally pass --debug to see more detail of what's happening.
 
+    Passing --no-fetch will skip updating the librarian sources from remote sources.
+
     If you just want to install a few recipes pass them along with --recipes and it will override the run list (not the attributes!)
     LONGDESC
     def provision(targetdir='/opt')
       logo
+      pid = Process.fork do
+        dorun "while true; do sudo -n true; sleep 60; kill -0 \"$$\" || exit; done 2>/dev/null"
+      end
+      Process.detach pid
       prepare_folders(targetdir)
       install_bundler(targetdir)
-      send_ping
       recipes = parse_config(targetdir)
-      fetch_cookbooks(targetdir, options[:debug])
+      fetch_cookbooks(targetdir, options[:debug]) unless options['no-fetch']
       run_chef(targetdir, (options[:recipes] ? options[:recipes] : recipes), options[:solorb], options[:debug])
       cleanup(targetdir, options[:debug])
+      Process.kill(9, pid)
       print_notice('Installation complete!')
     end
 
@@ -107,15 +118,9 @@ module Kitchenplan
         end
       end
 
-      def send_ping
-        print_step('Sending a ping to Google Analytics')
-        require 'gabba'
-        Gabba::Gabba.new('UA-46288146-1', 'github.com').event('Kitchenplan', 'Run', ENV['USER'])
-      end
-
       def fetch(gitrepo, targetdir)
         prepare_folders(targetdir)
-        if File.exists?("#{targetdir}/kitchenplan")
+        if system("cd #{File.join(targetdir, 'kitchenplan')} && git remote -v | grep origin")
           print_step "#{targetdir}/kitchenplan already exists, updating from git."
           inside("#{targetdir}/kitchenplan") do
             dorun('git pull -q')
